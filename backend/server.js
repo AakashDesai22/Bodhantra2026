@@ -22,7 +22,7 @@ app.use(cors({
         'http://localhost:5174',
         'https://bodhantra2026.teammavericks.org',
         'https://bodhantra2026.netlify.app',
-        'https://bodhantra2026.vercel.app/'
+        'https://bodhantra2026.vercel.app'
     ].filter(Boolean),
     credentials: true,
 }));
