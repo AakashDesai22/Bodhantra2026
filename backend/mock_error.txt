@@ -1,0 +1,1 @@
+SequelizeUniqueConstraintError: Validation error\n\nINSERT INTO `Events` (`id`,`name`,`slug`,`description`,`date`,`time`,`venue`,`offline_payment`,`custom_fields`,`status`,`participant_limit`,`event_duration`,`registration_open`,`createdAt`,`updatedAt`) VALUES (DEFAULT,?,?,?,?,?,?,?,?,?,?,?,?,?,?);

@@ -1,0 +1,202 @@
+﻿[dotenv@17.3.1] injecting env (8) from .env -- tip: ≡ƒ¢á∩╕Å  run anywhere with `dotenvx run -- yourcommand`
+Connection has been established successfully.
+Trends: [ { date: '2026-03-16', count: 1 }, { date: '2026-03-19', count: 2 } ]
+node : Unable to execute 
+expected query: Error
+At line:1 char:1
++ node test_api.js > 
+debug_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (U  
+  nable to execute expe   
+ cted query: Error:Str    
+ing) [], RemoteExcept    
+ion
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+    at Query.run (E:\Proje
+cts\team-mavericks-web\bac
+kend\node_modules\sequeliz
+e\lib\dialects\mysql\query
+.js:52:25)
+    at E:\Projects\team-ma
+vericks-web\backend\node_m
+odules\sequelize\lib\seque
+lize.js:315:28
+    at process.processTick
+sAndRejections (node:inter
+nal/process/task_queues:10
+3:5)
+    at async testDb (E:\Pr
+ojects\team-mavericks-web\
+backend\test_api.js:18:32)
+ {
+  name: 
+'SequelizeDatabaseError',
+  parent: Error: Table 'ma
+vericks_events.auditlogs' 
+doesn't exist
+      at Packet.asError (E
+:\Projects\team-mavericks-
+web\backend\node_modules\m
+ysql2\lib\packets\packet.j
+s:756:17)
+      at Query.execute (E:
+\Projects\team-mavericks-w
+eb\backend\node_modules\my
+sql2\lib\commands\command.
+js:29:26)
+      at 
+Connection.handlePacket (E
+:\Projects\team-mavericks-
+web\backend\node_modules\m
+ysql2\lib\base\connection.
+js:508:34)
+      at 
+PacketParser.onPacket (E:\
+Projects\team-mavericks-we
+b\backend\node_modules\mys
+ql2\lib\base\connection.js
+:93:12)
+      at 
+PacketParser.executeStart 
+(E:\Projects\team-maverick
+s-web\backend\node_modules
+\mysql2\lib\packet_parser.
+js:75:16)
+      at 
+Socket.<anonymous> (E:\Pro
+jects\team-mavericks-web\b
+ackend\node_modules\mysql2
+\lib\base\connection.js:10
+0:25)
+      at Socket.emit 
+(node:events:508:28)
+      at addChunk (node:in
+ternal/streams/readable:55
+9:12)
+      at readableAddChunkP
+ushByteMode (node:internal
+/streams/readable:510:3)
+      at Readable.push (no
+de:internal/streams/readab
+le:390:5) {
+    code: 
+'ER_NO_SUCH_TABLE',
+    errno: 1146,
+    sqlState: '42S02',
+    sqlMessage: "Table 'ma
+vericks_events.auditlogs' 
+doesn't exist",
+    sql: 'SELECT 
+userName, COUNT(*) as 
+count \n' +
+      '            FROM 
+AuditLogs \n' +
+      "            WHERE 
+userRole IN ('member', 
+'admin') \n" +
+      "              AND 
+(action LIKE '%Invite%' 
+OR action LIKE 
+'%Reveal%')\n" +
+      '            GROUP 
+BY userName\n' +
+      '            ORDER 
+BY count DESC',
+    parameters: undefined
+  },
+  original: Error: Table '
+mavericks_events.auditlogs
+' doesn't exist
+      at Packet.asError (E
+:\Projects\team-mavericks-
+web\backend\node_modules\m
+ysql2\lib\packets\packet.j
+s:756:17)
+      at Query.execute (E:
+\Projects\team-mavericks-w
+eb\backend\node_modules\my
+sql2\lib\commands\command.
+js:29:26)
+      at 
+Connection.handlePacket (E
+:\Projects\team-mavericks-
+web\backend\node_modules\m
+ysql2\lib\base\connection.
+js:508:34)
+      at 
+PacketParser.onPacket (E:\
+Projects\team-mavericks-we
+b\backend\node_modules\mys
+ql2\lib\base\connection.js
+:93:12)
+      at 
+PacketParser.executeStart 
+(E:\Projects\team-maverick
+s-web\backend\node_modules
+\mysql2\lib\packet_parser.
+js:75:16)
+      at 
+Socket.<anonymous> (E:\Pro
+jects\team-mavericks-web\b
+ackend\node_modules\mysql2
+\lib\base\connection.js:10
+0:25)
+      at Socket.emit 
+(node:events:508:28)
+      at addChunk (node:in
+ternal/streams/readable:55
+9:12)
+      at readableAddChunkP
+ushByteMode (node:internal
+/streams/readable:510:3)
+      at Readable.push (no
+de:internal/streams/readab
+le:390:5) {
+    code: 
+'ER_NO_SUCH_TABLE',
+    errno: 1146,
+    sqlState: '42S02',
+    sqlMessage: "Table 'ma
+vericks_events.auditlogs' 
+doesn't exist",
+    sql: 'SELECT 
+userName, COUNT(*) as 
+count \n' +
+      '            FROM 
+AuditLogs \n' +
+      "            WHERE 
+userRole IN ('member', 
+'admin') \n" +
+      "              AND 
+(action LIKE '%Invite%' 
+OR action LIKE 
+'%Reveal%')\n" +
+      '            GROUP 
+BY userName\n' +
+      '            ORDER 
+BY count DESC',
+    parameters: undefined
+  },
+  sql: 'SELECT userName, 
+COUNT(*) as count \n' +
+    '            FROM 
+AuditLogs \n' +
+    "            WHERE 
+userRole IN ('member', 
+'admin') \n" +
+    "              AND 
+(action LIKE '%Invite%' 
+OR action LIKE 
+'%Reveal%')\n" +
+    '            GROUP BY 
+userName\n' +
+    '            ORDER BY 
+count DESC',
+  parameters: {}
+}

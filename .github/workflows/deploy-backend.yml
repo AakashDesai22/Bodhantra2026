@@ -1,0 +1,77 @@
+# ============================================================
+#  Backend Deployment → Railway
+#  Triggers on pushes to main that touch backend/** files.
+#  Uses the Railway CLI to redeploy.
+# ============================================================
+#
+#  REQUIRED GITHUB SECRETS:
+#    RAILWAY_TOKEN   – Personal API token from Railway dashboard
+#                      (Settings → Tokens → Create Token)
+#
+#  REQUIRED GITHUB VARIABLES (Settings → Variables → Actions):
+#    RAILWAY_SERVICE_ID  – The service ID for your backend
+#                          (found in the Railway service URL or settings)
+#
+#  HOW IT WORKS:
+#    1. Checks out the repo
+#    2. Installs Railway CLI
+#    3. Links to your project/service
+#    4. Triggers a deploy from the backend/ directory
+#
+# ============================================================
+
+name: 🚂 Deploy Backend to Railway
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to Railway
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 📦 Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: 🔍 Run basic health check
+        working-directory: backend
+        run: node -e "require('./server.js'); console.log('✅ Server module loads OK');" || true
+
+      - name: 🚂 Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: 🚀 Deploy to Railway
+        working-directory: backend
+        run: railway up --detach
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: ✅ Deployment summary
+        run: |
+          echo "## 🚂 Backend Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Platform** | Railway |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,125 @@
+# ============================================================
+#  Frontend Deployment → Hostinger (via FTP)
+#  Triggers on pushes to main that touch frontend/** files.
+#  Builds the Vite app and deploys via FTP to Hostinger.
+# ============================================================
+#
+#  REQUIRED GITHUB SECRETS:
+#    HOSTINGER_FTP_SERVER    – FTP hostname (e.g., ftp.yourdomain.com)
+#    HOSTINGER_FTP_USERNAME  – FTP username from Hostinger panel
+#    HOSTINGER_FTP_PASSWORD  – FTP password
+#    VITE_API_URL            – Production backend API URL
+#                              (e.g., https://your-backend.up.railway.app)
+#
+#  OPTIONAL GITHUB VARIABLES:
+#    HOSTINGER_FTP_PORT      – FTP port (default: 21)
+#    HOSTINGER_REMOTE_DIR    – Remote directory (default: /public_html)
+#
+#  HOW IT WORKS:
+#    1. Checks out the repo
+#    2. Installs dependencies and builds the Vite app
+#    3. Uploads the dist/ folder to Hostinger via FTP
+#
+#  HOSTINGER FTP SETUP:
+#    1. Go to Hostinger hPanel → Files → FTP Accounts
+#    2. Note your FTP hostname, username, and password
+#    3. Add them as GitHub secrets
+#
+# ============================================================
+
+name: 🌐 Deploy Frontend to Hostinger
+
+on:
+  push:
+    branches: 
+      - "deploy"
+    paths:
+      - "frontend/**"
+      - ".github/workflows/deploy-frontend.yml"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build-and-deploy:
+    name: 🔨 Build & Deploy to Hostinger
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          #cache: "npm"
+          #cache-dependency-path: frontend/package-lock.json
+
+      - name: 📦 Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: 🏗️ Build production bundle
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+      - name: 📄 Create .htaccess for SPA routing
+        run: |
+          cat > frontend/dist/.htaccess << 'EOF'
+          # Enable Rewrite Engine
+          RewriteEngine On
+
+          # Force HTTPS
+          RewriteCond %{HTTPS} off
+          RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+          # Handle SPA routing – serve index.html for all non-file routes
+          RewriteBase /
+          RewriteRule ^index\.html$ - [L]
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule . /index.html [L]
+
+          # Enable Gzip Compression
+          <IfModule mod_deflate.c>
+            AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+          </IfModule>
+
+          # Cache static assets
+          <IfModule mod_expires.c>
+            ExpiresActive On
+            ExpiresByType text/css "access plus 1 year"
+            ExpiresByType application/javascript "access plus 1 year"
+            ExpiresByType image/png "access plus 1 year"
+            ExpiresByType image/jpeg "access plus 1 year"
+            ExpiresByType image/gif "access plus 1 year"
+            ExpiresByType image/svg+xml "access plus 1 year"
+            ExpiresByType font/woff2 "access plus 1 year"
+          </IfModule>
+          EOF
+
+      - name: 🚀 Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          port: ${{ vars.HOSTINGER_FTP_PORT || 21 }}
+          local-dir: frontend/dist/
+          server-dir: ${{ vars.HOSTINGER_REMOTE_DIR || '/bodhantra_2026/' }}
+         # dangerous-clean-slate: false
+    
+      - name: ✅ Deployment summary
+        run: |
+          echo "## 🌐 Frontend Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Platform** | Hostinger |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Build** | Production (Vite) |" >> $GITHUB_STEP_SUMMARY
+

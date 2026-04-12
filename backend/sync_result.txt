@@ -1,0 +1,2 @@
+ADDED attendance_sessions to Events
+ADDED session_id to Attendances
