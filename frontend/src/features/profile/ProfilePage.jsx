@@ -5,9 +5,8 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { showToast } from '@/components/ui/Toast';
-import { Upload, Camera, User } from 'lucide-react';
-
-export default function ProfilePage() {
+import { Upload, Camera, User, Download } from 'lucide-react';
+import QRCode from 'qrcode';export default function ProfilePage() {
     const { user, updateUserContext, isAdmin, isMember } = useAuth();
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -70,6 +69,27 @@ export default function ProfilePage() {
         }
     };
 
+    const downloadQrCode = async (e) => {
+        e.preventDefault();
+        if (!user?.unique_id) return;
+        try {
+            const qrDataUrl = await QRCode.toDataURL(user.unique_id, {
+                width: 800,
+                color: { dark: '#000000', light: '#ffffff' },
+                margin: 2
+            });
+            const link = document.createElement('a');
+            link.download = `MaverickID_${user.unique_id}.png`;
+            link.href = qrDataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('QR Code downloaded!', 'success');
+        } catch (err) {
+            showToast('Failed to generate QR code', 'error');
+        }
+    };
+
     if (!user) return null;
 
     const photoUrl = user.profile_picture ? `${API_URL}${user.profile_picture}` : null; 
@@ -125,11 +145,14 @@ export default function ProfilePage() {
                         </div>
 
                         {user.unique_id && (
-                            <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700 w-full">
+                            <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700 w-full flex flex-col items-center">
                                 <div className="text-xs text-slate-400 font-bold uppercase mb-1">Maverick ID</div>
-                                <div className="text-sm font-mono font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 py-2 rounded-lg">
+                                <div className="text-sm font-mono font-semibold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 py-2 px-4 rounded-lg w-full text-center mb-3">
                                     {user.unique_id}
                                 </div>
+                                <Button type="button" onClick={downloadQrCode} variant="outline" className="text-xs w-full py-2 h-auto flex items-center justify-center gap-2">
+                                    <Download size={14} /> Download QR Code
+                                </Button>
                             </div>
                         )}
                     </Card>
@@ -198,10 +221,7 @@ export default function ProfilePage() {
                                     >
                                         <option value="">Select Year</option>
                                         <option value="FY">First Year (FY)</option>
-                                        <option value="SY">Second Year (SY)</option>
-                                        <option value="TY">Third Year (TY)</option>
-                                        <option value="Final">Final Year</option>
-                                        <option value="Other">Other</option>
+                                        <option value="DSY">DSY</option>
                                     </select>
                                 </div>
                             </div>

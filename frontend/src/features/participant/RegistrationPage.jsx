@@ -5,6 +5,7 @@ import { API_URL } from '@/api';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
+import { Copy, Check } from 'lucide-react';
 
 const API = API_URL;
 
@@ -22,6 +23,8 @@ export default function RegistrationPage() {
     // Custom field responses
     const [customData, setCustomData] = useState({});
     const [file, setFile] = useState(null);
+    const [isUploadingId, setIsUploadingId] = useState(false);
+    const [idPreview, setIdPreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
@@ -29,6 +32,13 @@ export default function RegistrationPage() {
     const [showOtpModal, setShowOtpModal] = useState(false);
     const [otp, setOtp] = useState('');
     const [otpLoading, setOtpLoading] = useState(false);
+    const [copiedField, setCopiedField] = useState(null);
+
+    const handleCopy = (text, field) => {
+        navigator.clipboard.writeText(text);
+        setCopiedField(field);
+        setTimeout(() => setCopiedField(null), 2000);
+    };
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -66,7 +76,20 @@ export default function RegistrationPage() {
     };
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            setIsUploadingId(true);
+            const objectUrl = URL.createObjectURL(selectedFile);
+            setIdPreview(objectUrl);
+            // Simulate processing time for realistic UX feedback
+            setTimeout(() => {
+                setFile(selectedFile);
+                setIsUploadingId(false);
+            }, 1500); 
+        } else {
+            setFile(null);
+            setIdPreview(null);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -346,19 +369,38 @@ export default function RegistrationPage() {
                                 )}
 
                                 {credentials && (
-                                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 text-left max-w-sm mx-auto mb-6 mt-4">
-                                        <h4 className="font-bold text-blue-900 dark:text-blue-300 mb-3 text-center">Your Login Credentials</h4>
-                                        <div className="space-y-2">
-                                            <p className="text-sm text-blue-800">
-                                                <strong>Login ID:</strong>{' '}
-                                                <code className="bg-blue-100 px-2 py-0.5 rounded text-blue-900">{credentials.loginId}</code>
-                                            </p>
-                                            <p className="text-sm text-blue-800">
-                                                <strong>Password:</strong>{' '}
-                                                <code className="bg-blue-100 px-2 py-0.5 rounded text-blue-900">{credentials.password}</code>
-                                            </p>
+                                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 text-left max-w-sm mx-auto mb-6 mt-4 shadow-sm">
+                                        <h4 className="font-bold text-blue-900 dark:text-blue-300 mb-4 text-center">Your Login Credentials</h4>
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between bg-white dark:bg-slate-800 p-3 rounded-lg border border-blue-100 dark:border-blue-700/50 shadow-sm">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-1">Login ID</span>
+                                                    <code className="text-sm font-semibold text-slate-800 dark:text-slate-200">{credentials.loginId}</code>
+                                                </div>
+                                                <button 
+                                                    onClick={() => handleCopy(credentials.loginId, 'loginId')} 
+                                                    className="p-2 rounded-md bg-blue-50 hover:bg-blue-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-slate-600 transition-colors" 
+                                                    title="Copy Login ID"
+                                                >
+                                                    {copiedField === 'loginId' ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+                                                </button>
+                                            </div>
+                                            
+                                            <div className="flex items-center justify-between bg-white dark:bg-slate-800 p-3 rounded-lg border border-blue-100 dark:border-blue-700/50 shadow-sm">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-1">Password</span>
+                                                    <code className="text-sm font-semibold text-slate-800 dark:text-slate-200">{credentials.password}</code>
+                                                </div>
+                                                <button 
+                                                    onClick={() => handleCopy(credentials.password, 'password')} 
+                                                    className="p-2 rounded-md bg-blue-50 hover:bg-blue-100 dark:bg-slate-700 dark:hover:bg-slate-600 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-slate-600 transition-colors" 
+                                                    title="Copy Password"
+                                                >
+                                                    {copiedField === 'password' ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+                                                </button>
+                                            </div>
                                         </div>
-                                        <p className="text-xs text-blue-600 mt-3 text-center">Save these credentials to access your dashboard</p>
+                                        <p className="text-xs text-blue-600 mt-4 text-center font-medium">Save these credentials to access your dashboard</p>
                                     </div>
                                 )}
 
@@ -453,9 +495,7 @@ export default function RegistrationPage() {
                                         <select name="year" required value={formData.year} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white dark:bg-slate-800 dark:text-white text-sm">
                                             <option value="">Select Year...</option>
                                             <option value="FY">First Year (FY)</option>
-                                            <option value="SY">Second Year (SY)</option>
-                                            <option value="TY">Third Year (TY)</option>
-                                            <option value="BTECH">Final Year (BTECH)</option>
+                                            <option value="DSY">DSY</option>
                                         </select>
                                     </div>
                                 </div>
@@ -476,7 +516,7 @@ export default function RegistrationPage() {
                                 {(event.payment_amount > 0 || event.require_online_payment || event.require_offline_payment) && (
                                     <div className="border-t border-slate-200 pt-5 mt-5">
                                         <h3 className="text-md font-semibold text-slate-700 dark:text-slate-200 mb-3">
-                                            Payment {event.payment_amount > 0 ? <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded-md border border-green-200">(₹{event.payment_amount})</span> : ''}
+                                            College ID Proof* {event.payment_amount > 0 ? <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded-md border border-green-200">(₹{event.payment_amount})</span> : ''}
                                         </h3>
 
                                         {event.require_online_payment && event.require_offline_payment ? (
@@ -515,17 +555,36 @@ export default function RegistrationPage() {
                                                     </p>
                                                 )}
                                                 <div>
-                                                    <label className="block text-sm font-medium text-blue-900 mb-1">Upload Payment Screenshot *</label>
+                                                    <label className="block text-sm font-medium text-blue-900 mb-1">Upload College ID Card*</label>
+                                                    {idPreview && (
+                                                        <div className="mb-4 relative rounded-lg border border-blue-200 overflow-hidden bg-white max-w-xs shadow-sm">
+                                                            {isUploadingId ? (
+                                                                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+                                                                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+                                                                    <span className="text-sm font-semibold text-blue-700">Uploading...</span>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1 shadow-md z-10 flex items-center gap-1 px-2">
+                                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                                                    </svg>
+                                                                    <span className="text-xs font-bold">Uploaded</span>
+                                                                </div>
+                                                            )}
+                                                            <img src={idPreview} alt="ID Preview" className="w-full h-auto object-cover max-h-48 mx-auto" />
+                                                        </div>
+                                                    )}
                                                     <input
                                                         type="file"
                                                         accept="image/*"
                                                         onChange={handleFileChange}
+                                                        disabled={isUploadingId}
                                                         className="block w-full text-sm text-slate-500
                                                             file:mr-4 file:py-2 file:px-4
                                                             file:rounded-md file:border-0
                                                             file:text-sm file:font-semibold
                                                             file:bg-blue-600 file:text-white
-                                                            hover:file:bg-blue-700 transition cursor-pointer"
+                                                            hover:file:bg-blue-700 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                                     />
                                                 </div>
                                             </div>
@@ -556,8 +615,8 @@ export default function RegistrationPage() {
                                     </div>
                                 )}
 
-                                <Button type="submit" className="w-full py-3 text-lg mt-4" disabled={loading}>
-                                    {loading ? 'Processing...' : 'Complete Registration'}
+                                <Button type="submit" className="w-full py-3 text-lg mt-4" disabled={loading || isUploadingId}>
+                                    {loading ? 'Processing...' : isUploadingId ? 'Uploading ID...' : 'Complete Registration'}
                                 </Button>
                             </form>
                         )}
