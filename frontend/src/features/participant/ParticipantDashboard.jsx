@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useTheme } from '@/context/ThemeContext';
-import { Sun, Moon, Star } from 'lucide-react';
+import { Sun, Moon, Star, Download } from 'lucide-react';
 import WheelReveal from './WheelReveal';
 import SupportCard from './SupportCard';
 import FeedbackForm from './FeedbackForm';
@@ -19,6 +19,15 @@ export default function ParticipantDashboard() {
     const [chatMessages, setChatMessages] = useState([{ sender: 'bot', text: 'Hi! Ask me keywords like timing, venue, or certificate.' }]);
     const [feedbackEvent, setFeedbackEvent] = useState(null);
     const [certRegistration, setCertRegistration] = useState(null);
+
+    const downloadQR = (dataUrl, eventName) => {
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = `${eventName.replace(/\s+/g, '_')}_EventPass.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     useEffect(() => {
         fetchData();
@@ -128,13 +137,22 @@ export default function ParticipantDashboard() {
                                             {reg.status === 'approved' && reg.qr_code_data && (
                                                 <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                                                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-5 text-center border border-blue-200 dark:border-blue-800">
-                                                        <h5 className="font-bold text-blue-900 dark:text-blue-300 mb-2">🎫 Your Event Pass</h5>
-                                                        <img
-                                                            src={reg.qr_code_data}
-                                                            alt="Event Pass QR Code"
-                                                            className="w-44 h-44 mx-auto rounded-lg border-2 border-white dark:border-slate-700 shadow-md bg-white"
-                                                        />
-                                                        <p className="text-xs text-blue-700 dark:text-blue-400 mt-3">Show this QR code at the venue for check-in</p>
+                                                        <h5 className="font-bold text-blue-900 dark:text-blue-300 mb-4">🎫 Your Event Pass</h5>
+                                                        <div className="relative inline-block">
+                                                            <img
+                                                                src={reg.qr_code_data}
+                                                                alt="Event Pass QR Code"
+                                                                className="w-44 h-44 mx-auto rounded-lg border-2 border-white dark:border-slate-700 shadow-md bg-white"
+                                                            />
+                                                            <button
+                                                                onClick={() => downloadQR(reg.qr_code_data, reg.Event?.name || 'Event')}
+                                                                className="absolute -bottom-3 -right-3 bg-blue-600 hover:bg-blue-700 text-white p-2.5 rounded-full shadow-lg transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                                                title="Download QR Code"
+                                                            >
+                                                                <Download size={18} />
+                                                            </button>
+                                                        </div>
+                                                        <p className="text-xs text-blue-700 dark:text-blue-400 mt-5 font-medium">Show this QR code at the venue for check-in</p>
                                                     </div>
                                                 </div>
                                             )}

@@ -11,8 +11,8 @@ app.use(morgan('dev'));
 
 // Manual log to guarantee visibility on Render
 app.use((req, res, next) => {
-  console.log(`>>> ${req.method} request to: ${req.url} at ${new Date().toISOString()}`);
-  next();
+    console.log(`>>> ${req.method} request to: ${req.url} at ${new Date().toISOString()}`);
+    next();
 });
 
 app.use(cors({
@@ -21,7 +21,8 @@ app.use(cors({
         'http://localhost:5173',
         'http://localhost:5174',
         'https://bodhantra2026.teammavericks.org',
-        'https://bodhantra2026.netlify.app'
+        'https://bodhantra2026.netlify.app',
+        'https://bodhantra2026.vercel.app/'
     ].filter(Boolean),
     credentials: true,
 }));
