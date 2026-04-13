@@ -93,40 +93,17 @@ const sendOtp = async (req, res) => {
 
         console.log(`\n=========================================\n[LOCAL LOG] OTP for ${email}: ${otp}\n=========================================\n`);
         
-        // 1. Try Nodemailer First
-        const htmlOtp = `
-        <div style="font-family: sans-serif; padding: 20px; text-align: center;">
-            <h2 style="color: #111827;">Registration OTP</h2>
-            <p>Hi ${userName},</p>
-            <p>Your One-Time Password for event registration is:</p>
-            <div style="margin: 20px auto; padding: 15px; background: #f3f4f6; border-radius: 8px; max-width: 300px; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #2563eb;">
-                ${otp}
-            </div>
-            <p>This code will expire in 10 minutes.</p>
-        </div>`;
-        
-        let success = await sendMailDirect(email, 'Bodhantra 2026 - Registration OTP', htmlOtp);
+        console.log(`>>> BACKEND: Attempting OTP via Hostinger PHP Mailer to ${email}`);
+        const success = await callHostingerMailer({
+            to_email: email, 
+            user_name: userName, 
+            otp: otp, 
+            subject: 'Bodhantra 2026 - Registration OTP'
+        });
 
-        // 2. Fallback to Hostinger
         if (!success) {
-            success = await callHostingerMailer({
-                to_email: email, user_name: userName, otp: otp, subject: 'Bodhantra 2026 - Registration OTP'
-            });
-        }
-
-        // 3. Fallback to EmailJS
-        if (!success) {
-            try {
-                const keys = getEmailJsKeys();
-                if (keys.serviceId && keys.publicKey) {
-                    await axios.post(EMAILJS_URL, {
-                        service_id: keys.serviceId, template_id: keys.templateId, user_id: keys.publicKey, accessToken: keys.privateKey,
-                        template_params: { to_email: email, user_name: userName, otp: otp, subject: 'Bodhantra 2026 - Registration OTP' }
-                    });
-                }
-            } catch (e) {
-                 console.error('>>> BACKEND ERROR: EmailJS completely failed too', e.message);
-            }
+            console.error('>>> BACKEND ERROR: Hostinger Mailer failed for OTP');
+            return res.status(500).json({ message: 'Failed to send OTP' });
         }
 
         res.status(200).json({ message: 'OTP sent successfully' });
@@ -145,20 +122,14 @@ const sendRegistrationEmail = async (email, name, eventName, date, venue, whatsa
              html = templates.registrationReceived(name, eventName, '', whatsappLink, paymentMethod, null);
         }
 
-        let success = await sendMailDirect(email, title, html);
-        
-        if (!success) {
-            success = await callHostingerMailer({ to_email: email, user_name: name, otp: 'CONFIRMED', subject: title });
-            if (!success) {
-                const keys = getEmailJsKeys();
-                if (keys.serviceId) {
-                    await axios.post(EMAILJS_URL, {
-                        service_id: keys.serviceId, template_id: keys.templateId, user_id: keys.publicKey, accessToken: keys.privateKey,
-                        template_params: { to_email: email, user_name: name, event_name: eventName, event_date: date, event_venue: venue, whatsapp_link: whatsappLink, subject: title }
-                    });
-                }
-            }
-        }
+        console.log(`>>> BACKEND: Attempting Registration Confirmation via Hostinger to ${email}`);
+        await callHostingerMailer({ 
+            to_email: email, 
+            user_name: name, 
+            otp: 'CONFIRMED', 
+            subject: title,
+            whatsapp_link: whatsappLink 
+        });
     } catch (error) {
         console.error('Error sending registration email:', error.message);
     }
@@ -176,18 +147,14 @@ const sendTemplateEmail = async (email, subject, templateName, data) => {
            success = await sendMailDirect(email, subject, htmlContent);
         }
 
-        if (!success) {
-            success = await callHostingerMailer({ to_email: email, subject: subject, user_name: data.user_name || email.split('@')[0], otp: data.message || '' });
-            if (!success) {
-                const keys = getEmailJsKeys();
-                if (keys.serviceId) {
-                     await axios.post(EMAILJS_URL, { 
-                        service_id: keys.serviceId, template_id: keys.templateId, user_id: keys.publicKey, accessToken: keys.privateKey, 
-                        template_params: { to_email: email, subject: subject, ...data } 
-                     });
-                }
-            }
-        }
+        console.log(`>>> BACKEND: Attempting Broadcast via Hostinger to ${email}`);
+        await callHostingerMailer({ 
+            to_email: email, 
+            subject: subject, 
+            user_name: data.user_name || email.split('@')[0], 
+            otp: data.message || '',
+            whatsapp_link: data.whatsappLink || ''
+        });
     } catch (error) {
         console.error('Error sending Template Email:', error.message);
     }
