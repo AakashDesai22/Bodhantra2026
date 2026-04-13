@@ -185,7 +185,7 @@ export default function WinnerThemeHub() {
                         <div className="flex items-center gap-4">
                             <div className="relative group overflow-hidden rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-primary transition-colors h-28 w-28 flex-shrink-0 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center">
                                 {config.winnerPhoto ? (
-                                    <img src={`${API_URL}${config.winnerPhoto}`} alt="Winner" className="w-full h-full object-cover" />
+                                    <img src={`${config.winnerPhoto?.startsWith('http') ? config.winnerPhoto : `${API_URL}${config.winnerPhoto}`}`} alt="Winner" className="w-full h-full object-cover" />
                                 ) : (
                                     <ImageIcon className="text-slate-400" size={28} />
                                 )}

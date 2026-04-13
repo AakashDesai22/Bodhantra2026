@@ -374,7 +374,7 @@ export default function TechnicalReveal() {
                                         }}
                                     >
                                         <motion.img
-                                            src={`${API_URL}${winnerPhotoUrl}`}
+                                            src={`${winnerPhotoUrl?.startsWith('http') ? winnerPhotoUrl : `${API_URL}${winnerPhotoUrl}`}`}
                                             alt="Winner"
                                             className="w-48 h-48 md:w-64 md:h-64 rounded-lg object-cover border-2 border-[#00ff00]"
                                             style={{
@@ -428,7 +428,7 @@ export default function TechnicalReveal() {
 
             {/* ── Preload photo ── */}
             {winnerPhotoUrl && stage === 'idle' && (
-                <img src={`${API_URL}${winnerPhotoUrl}`} alt="" className="hidden" />
+                <img src={`${winnerPhotoUrl?.startsWith('http') ? winnerPhotoUrl : `${API_URL}${winnerPhotoUrl}`}`} alt="" className="hidden" />
             )}
         </div>
     );

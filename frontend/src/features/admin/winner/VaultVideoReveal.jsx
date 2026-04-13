@@ -233,7 +233,7 @@ export default function VaultVideoReveal() {
                                         }}
                                     />
                                     <img
-                                        src={`${API_URL}${winnerPhotoUrl}`}
+                                        src={`${winnerPhotoUrl?.startsWith('http') ? winnerPhotoUrl : `${API_URL}${winnerPhotoUrl}`}`}
                                         alt="Winner"
                                         className="w-56 h-56 md:w-72 md:h-72 rounded-full object-cover border-[6px] border-yellow-400 relative z-10"
                                         style={{
@@ -311,7 +311,7 @@ export default function VaultVideoReveal() {
 
             {/* ── Preload photo ── */}
             {winnerPhotoUrl && stage === 'idle' && (
-                <img src={`${API_URL}${winnerPhotoUrl}`} alt="" className="hidden" />
+                <img src={`${winnerPhotoUrl?.startsWith('http') ? winnerPhotoUrl : `${API_URL}${winnerPhotoUrl}`}`} alt="" className="hidden" />
             )}
         </div>
     );

@@ -157,7 +157,7 @@ export default function Navbar() {
                                     <Link to="/profile" className="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-colors rounded-full pl-3 pr-1 py-1 cursor-pointer">
                                         {user?.profile_picture ? (
                                             <img 
-                                                src={`${API_URL}${user.profile_picture}`} 
+                                                src={`${user.profile_picture?.startsWith('http') ? user.profile_picture : `${API_URL}${user.profile_picture}`}`} 
                                                 alt={user?.name} 
                                                 className="w-7 h-7 rounded-full object-cover border border-white/20"
                                             />
@@ -250,7 +250,7 @@ export default function Navbar() {
                             <Link to="/profile" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
                                         {user?.profile_picture ? (
                                             <img 
-                                                src={`${API_URL}${user.profile_picture}`} 
+                                                src={`${user.profile_picture?.startsWith('http') ? user.profile_picture : `${API_URL}${user.profile_picture}`}`} 
                                                 alt={user?.name} 
                                                 className="w-10 h-10 rounded-full object-cover border-2 border-white/20"
                                             />

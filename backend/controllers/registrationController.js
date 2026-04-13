@@ -90,9 +90,9 @@ const registerForEvent = async (req, res) => {
         }
 
         // Handle payment screenshot
-        let payment_ss_url = null;
-        if (payment_method === 'online' && req.file) {
-            payment_ss_url = `/uploads/${req.file.filename}`;
+        let payment_ss_url = req.body.payment_ss_url || null;
+        if (payment_method === 'online' && !payment_ss_url && req.file) {
+            payment_ss_url = req.file.path;
         }
 
         // Parse custom_data
@@ -161,14 +161,14 @@ const registerForEvent = async (req, res) => {
 // Protected: Create a registration (for logged-in users)
 const createRegistration = async (req, res) => {
     try {
-        const { event_id, payment_method } = req.body;
-        let payment_ss_url = null;
+        const { event_id, payment_method, payment_ss_url: bodyUrl } = req.body;
+        let payment_ss_url = bodyUrl || null;
 
-        if (payment_method === 'online') {
+        if (payment_method === 'online' && !payment_ss_url) {
             if (!req.file) {
                 return res.status(400).json({ message: 'Payment screenshot is required for online payment' });
             }
-            payment_ss_url = `/uploads/${req.file.filename}`;
+            payment_ss_url = req.file.path;
         }
 
         const event = await Event.findByPk(event_id);

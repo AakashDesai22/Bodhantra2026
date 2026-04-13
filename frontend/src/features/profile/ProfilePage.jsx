@@ -92,7 +92,7 @@ import QRCode from 'qrcode';export default function ProfilePage() {
 
     if (!user) return null;
 
-    const photoUrl = user.profile_picture ? `${API_URL}${user.profile_picture}` : null; 
+    const photoUrl = user.profile_picture ? `${user.profile_picture?.startsWith('http') ? user.profile_picture : `${API_URL}${user.profile_picture}`}` : null; 
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 mt-20">

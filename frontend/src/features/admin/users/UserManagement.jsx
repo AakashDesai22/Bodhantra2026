@@ -164,7 +164,7 @@ function UserDetailModal({ user, onClose }) {
                 <div className="flex flex-col items-center mb-6 pt-4">
                     {user.profile_picture ? (
                         <img 
-                            src={`${API_URL}${user.profile_picture}`} 
+                            src={`${user.profile_picture?.startsWith('http') ? user.profile_picture : `${API_URL}${user.profile_picture}`}`} 
                             alt={user.name} 
                             className="w-20 h-20 rounded-full object-cover mb-4 shadow-lg shadow-blue-500/20 border-4 border-white dark:border-slate-700"
                         />
@@ -340,7 +340,7 @@ export default function UserManagement() {
                                             <button onClick={() => setViewUser(u)} className="flex items-center gap-3 text-left group">
                                                 {u.profile_picture ? (
                                                     <img 
-                                                        src={`${API_URL}${u.profile_picture}`} 
+                                                        src={`${u.profile_picture?.startsWith('http') ? u.profile_picture : `${API_URL}${u.profile_picture}`}`} 
                                                         alt={u.name} 
                                                         className="w-9 h-9 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700" 
                                                     />

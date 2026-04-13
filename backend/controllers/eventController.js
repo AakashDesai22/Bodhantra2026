@@ -90,13 +90,13 @@ const createEvent = async (req, res) => {
 
         if (req.files) {
             if (req.files.photo && req.files.photo[0]) {
-                photo_url = `/uploads/${req.files.photo[0].filename}`;
+                photo_url = req.files.photo[0].path;
             }
             if (req.files.poster && req.files.poster[0]) {
-                poster_url = `/uploads/${req.files.poster[0].filename}`;
+                poster_url = req.files.poster[0].path;
             }
             if (req.files.qr_code && req.files.qr_code[0]) {
-                qr_code_url = `/uploads/${req.files.qr_code[0].filename}`;
+                qr_code_url = req.files.qr_code[0].path;
             }
         }
 
@@ -176,13 +176,13 @@ const updateEvent = async (req, res) => {
         // Handle file uploads - only update if new file provided
         if (req.files) {
             if (req.files.photo && req.files.photo[0]) {
-                event.photo_url = `/uploads/${req.files.photo[0].filename}`;
+                event.photo_url = req.files.photo[0].path;
             }
             if (req.files.poster && req.files.poster[0]) {
-                event.poster_url = `/uploads/${req.files.poster[0].filename}`;
+                event.poster_url = req.files.poster[0].path;
             }
             if (req.files.qr_code && req.files.qr_code[0]) {
-                event.qr_code_url = `/uploads/${req.files.qr_code[0].filename}`;
+                event.qr_code_url = req.files.qr_code[0].path;
             }
         }
 

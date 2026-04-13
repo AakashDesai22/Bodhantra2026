@@ -144,7 +144,7 @@ export default function JackpotDisplay() {
 
             {/* Hidden Preloader for Wifi/Image latency */}
             {config?.winnerPhoto && stage === STAGES.IDLE && (
-                <img src={`${API_URL}${config.winnerPhoto}`} alt="Preload" className="hidden" />
+                <img src={`${config.winnerPhoto?.startsWith('http') ? config.winnerPhoto : `${API_URL}${config.winnerPhoto}`}`} alt="Preload" className="hidden" />
             )}
 
             <AnimatePresence>
@@ -239,7 +239,7 @@ export default function JackpotDisplay() {
                                 transition={{ type: 'spring', stiffness: 200, damping: 12 }}
                                 className="w-80 h-80 md:w-[35rem] md:h-[35rem] rounded-full overflow-hidden border-[16px] border-yellow-400 shadow-[0_0_150px_rgba(250,204,21,0.8),inset_0_0_50px_rgba(0,0,0,0.8)] mb-8 relative bg-slate-900 mt-20"
                             >
-                                <img src={`${API_URL}${config.winnerPhoto}`} alt="Winner" className="w-full h-full object-cover relative z-0" />
+                                <img src={`${config.winnerPhoto?.startsWith('http') ? config.winnerPhoto : `${API_URL}${config.winnerPhoto}`}`} alt="Winner" className="w-full h-full object-cover relative z-0" />
                             </motion.div>
                         )}
                         

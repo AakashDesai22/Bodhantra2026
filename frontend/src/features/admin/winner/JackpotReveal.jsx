@@ -461,7 +461,7 @@ export default function JackpotReveal() {
                                 transition={{ delay: 1.2, type: 'spring', stiffness: 200, damping: 20 }}
                             >
                                 <img
-                                    src={`${API_URL}${winnerPhotoUrl}`}
+                                    src={`${winnerPhotoUrl?.startsWith('http') ? winnerPhotoUrl : `${API_URL}${winnerPhotoUrl}`}`}
                                     alt="Winner"
                                     className="w-80 h-80 md:w-[420px] md:h-[420px] rounded-full object-cover border-[8px] border-yellow-400 shadow-2xl"
                                     style={{
@@ -476,7 +476,7 @@ export default function JackpotReveal() {
 
             {/* ── Preload photo ── */}
             {winnerPhotoUrl && stage === 'idle' && (
-                <img src={`${API_URL}${winnerPhotoUrl}`} alt="" className="hidden" />
+                <img src={`${winnerPhotoUrl?.startsWith('http') ? winnerPhotoUrl : `${API_URL}${winnerPhotoUrl}`}`} alt="" className="hidden" />
             )}
         </div>
     );

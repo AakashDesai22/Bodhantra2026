@@ -30,8 +30,29 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// To serve uploaded files statically
+// Re-enabled static uploads for backward compatibility with old database entries
+// created BEFORE the Cloudinary migration.
 app.use('/uploads', express.static('uploads'));
+
+const uploadMiddleware = require('./middleware/uploadMiddleware');
+
+const multer = require('multer');
+
+app.post('/api/upload', (req, res) => {
+    uploadMiddleware.single('image')(req, res, function (err) {
+        if (err) {
+            console.error(">>> UPLOAD ERROR:", err);
+            return res.status(500).json({ 
+                message: err.message || err.toString() || 'Unknown upload error' 
+            });
+        }
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        console.log(">> ✅ Instant Cloudinary Upload Successful! URL:", req.file.path);
+        res.json({ url: req.file.path });
+    });
+});
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));

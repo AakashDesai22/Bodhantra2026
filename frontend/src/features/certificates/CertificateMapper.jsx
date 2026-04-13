@@ -401,7 +401,7 @@ export default function CertificateMapper({ event, onSaved }) {
                         style={{ minHeight: 300 }}
                     >
                         <img
-                            src={`${API_URL}${backgroundUrl}`}
+                            src={`${backgroundUrl?.startsWith('http') ? backgroundUrl : `${API_URL}${backgroundUrl}`}`}
                             alt="Certificate Template"
                             onLoad={handleImageLoad}
                             className="w-full h-auto block"

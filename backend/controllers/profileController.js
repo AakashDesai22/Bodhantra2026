@@ -86,7 +86,7 @@ const uploadProfilePicture = async (req, res) => {
             return res.status(403).json({ message: 'Users cannot upload profile pictures' });
         }
 
-        user.profile_picture = `/uploads/${req.file.filename}`;
+        user.profile_picture = req.file.path;
         await user.save();
 
         res.json({

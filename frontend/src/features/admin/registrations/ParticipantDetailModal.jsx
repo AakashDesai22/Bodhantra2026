@@ -154,9 +154,9 @@ export default function ParticipantDetailModal({ registrationId, onClose, onActi
                         {registration.payment_ss_url && (
                             <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-700">
                                 <h3 className="font-bold text-slate-800 dark:text-white uppercase tracking-wider text-sm mb-4">Payment Verification</h3>
-                                <div className="relative group cursor-pointer overflow-hidden rounded-3xl border-4 border-slate-100 dark:border-slate-700 max-w-md mx-auto aspect-video flex items-center justify-center bg-slate-100" onClick={() => window.open(`${API_URL}${registration.payment_ss_url}`, '_blank')}>
+                                <div className="relative group cursor-pointer overflow-hidden rounded-3xl border-4 border-slate-100 dark:border-slate-700 max-w-md mx-auto aspect-video flex items-center justify-center bg-slate-100" onClick={() => window.open(`${registration.payment_ss_url?.startsWith('http') ? registration.payment_ss_url : `${API_URL}${registration.payment_ss_url}`}`, '_blank')}>
                                     <img 
-                                        src={`${API_URL}${registration.payment_ss_url}`} 
+                                        src={`${registration.payment_ss_url?.startsWith('http') ? registration.payment_ss_url : `${API_URL}${registration.payment_ss_url}`}`} 
                                         alt="Payment Proof" 
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                                     />

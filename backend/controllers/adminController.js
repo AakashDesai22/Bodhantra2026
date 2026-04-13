@@ -544,7 +544,7 @@ const uploadAdminPhoto = async (req, res) => {
         // Return the path or filename so frontend can display it
         res.json({ 
             message: 'Photo uploaded successfully', 
-            url: `/uploads/${req.file.filename}` 
+            url: req.file.path 
         });
     } catch (error) {
         console.error(error);

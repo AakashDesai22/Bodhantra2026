@@ -135,7 +135,7 @@ export default function LandingPage() {
                                         {evt.poster_url ? (
                                             <div className="overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                                 <img
-                                                    src={`${API}${evt.poster_url}`}
+                                                    src={`${evt.poster_url?.startsWith('http') ? evt.poster_url : `${API}${evt.poster_url}`}`}
                                                     alt={evt.name}
                                                     className="w-full max-h-64 object-contain hover:scale-105 transition-transform duration-500"
                                                 />
@@ -205,7 +205,7 @@ export default function LandingPage() {
                 {event?.poster_url ? (
                     <>
                         <div className="absolute inset-0">
-                            <img src={`${API}${event.poster_url}`} alt="" className="w-full h-full object-cover" />
+                            <img src={`${event.poster_url?.startsWith('http') ? event.poster_url : `${API}${event.poster_url}`}`} alt="" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/80 to-blue-900/70 backdrop-blur-[2px]"></div>
                         </div>
                     </>
@@ -261,7 +261,7 @@ export default function LandingPage() {
                                 <div className="mt-4 p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm text-center">
                                     <h3 className="font-semibold text-slate-800 dark:text-white mb-3">Payment QR Code</h3>
                                     <img
-                                        src={`${API}${event.qr_code_url}`}
+                                        src={`${event.qr_code_url?.startsWith('http') ? event.qr_code_url : `${API}${event.qr_code_url}`}`}
                                         alt="Payment QR Code"
                                         className="w-40 h-40 object-contain mx-auto rounded-lg"
                                     />
@@ -274,7 +274,7 @@ export default function LandingPage() {
                         {event.photo_url && (
                             <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                 <img
-                                    src={`${API}${event.photo_url}`}
+                                    src={`${event.photo_url?.startsWith('http') ? event.photo_url : `${API}${event.photo_url}`}`}
                                     alt={event.name}
                                     className="w-full h-auto max-h-96 object-contain"
                                 />

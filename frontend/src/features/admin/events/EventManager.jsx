@@ -525,7 +525,7 @@ export default function EventManager({ events, onRefresh, readOnly = false }) {
                         <Card key={evt.id} className="hover:shadow-xl transition-shadow flex flex-col">
                             {evt.poster_url && (
                                 <div className="overflow-hidden bg-slate-100 dark:bg-slate-700 rounded-t-2xl">
-                                    <img src={`${API_URL}${evt.poster_url}`} alt={evt.name} className="w-full max-h-48 object-contain" />
+                                    <img src={`${evt.poster_url?.startsWith('http') ? evt.poster_url : `${API_URL}${evt.poster_url}`}`} alt={evt.name} className="w-full max-h-48 object-contain" />
                                 </div>
                             )}
                             <CardContent className="p-5 flex-grow flex flex-col">

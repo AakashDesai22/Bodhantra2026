@@ -75,17 +75,31 @@ export default function RegistrationPage() {
         setCustomData({ ...customData, [name]: value });
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
             setIsUploadingId(true);
             const objectUrl = URL.createObjectURL(selectedFile);
             setIdPreview(objectUrl);
-            // Simulate processing time for realistic UX feedback
-            setTimeout(() => {
-                setFile(selectedFile);
+            
+            try {
+                const uploadData = new FormData();
+                uploadData.append('image', selectedFile);
+                const res = await axios.post(`${API}/api/upload`, uploadData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                
+                // Keep the Cloudinary URL in state rather than the local file object
+                setFile(res.data.url);
+                console.log("Instant upload finished:", res.data.url);
+            } catch (err) {
+                console.error("Upload error", err);
+                setError("Failed to upload image securely.");
+                setFile(null);
+                setIdPreview(null);
+            } finally {
                 setIsUploadingId(false);
-            }, 1500); 
+            }
         } else {
             setFile(null);
             setIdPreview(null);
@@ -187,7 +201,7 @@ export default function RegistrationPage() {
             data.append('otp', otp);
 
             if (formData.payment_method === 'online' && file) {
-                data.append('payment_ss', file);
+                data.append('payment_ss_url', file); // Sending the Cloudinary URL directly
             }
 
             const res = await axios.post(`${API}/api/registrations/event/${event.id}`, data, {
@@ -543,7 +557,7 @@ export default function RegistrationPage() {
                                                     <div className="text-center">
                                                         <p className="text-sm font-medium text-blue-900 mb-3">Scan QR Code to Pay</p>
                                                         <img
-                                                            src={`${API}${event.qr_code_url}`}
+                                                            src={`${event.qr_code_url?.startsWith('http') ? event.qr_code_url : `${API}${event.qr_code_url}`}`}
                                                             alt="Payment QR Code"
                                                             className="w-48 h-48 object-contain mx-auto rounded-lg border-2 border-white shadow-md bg-white"
                                                         />
