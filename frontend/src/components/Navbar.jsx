@@ -47,8 +47,8 @@ export default function Navbar() {
     // ── Navigation links ──
     const publicLinks = [
         { to: '/#events', label: 'Events', icon: CalendarDays, isHash: true },
+        { to: '/about', label: 'About Us', icon: Users },
         { to: '/contact', label: 'Contact Us', icon: Mail },
-        { to: '/team', label: 'Team Page', icon: Users },
     ];
 
     const authLinks = [];
@@ -126,7 +126,7 @@ export default function Navbar() {
                                 Team Mavericks
                             </span>
                             <span className="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest text-secondary bg-secondary/15 px-2 py-0.5 rounded-full">
-                                Club
+                                KITCOeK
                             </span>
                         </Link>
 

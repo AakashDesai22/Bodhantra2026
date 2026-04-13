@@ -11,6 +11,8 @@ import TechnicalReveal from '@/features/admin/winner/TechnicalReveal';
 import VaultVideoReveal from '@/features/admin/winner/VaultVideoReveal';
 import JackpotReveal from '@/features/admin/winner/JackpotReveal';
 import ProfilePage from '@/features/profile/ProfilePage';
+import AboutPage from '@/pages/AboutPage';
+import ContactPage from '@/pages/ContactPage';
 
 const AppRoutes = () => {
   return (
@@ -22,6 +24,8 @@ const AppRoutes = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/event/:slug" element={<LandingPage />} />
         <Route path="/event/:slug/register" element={<RegistrationPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         {/* Protected: Participant */}
         <Route

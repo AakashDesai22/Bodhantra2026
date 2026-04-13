@@ -59,11 +59,13 @@ export default function LandingPage() {
                     <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-dark to-blue-900 opacity-90"></div>
                     <div className="max-w-4xl mx-auto text-center relative z-10 w-full">
                         <div className="inline-block px-4 py-1.5 bg-white/15 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
-                            🚀 Team Mavericks
+                            🚀 Event Hub
                         </div>
                         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-                            Universal Event
-                            <span className="block text-secondary">Management</span>
+                            <div className='flex justify-center items-center gap-7'>
+                                <span>Team</span>
+                                <span className="block text-secondary">Mavericks</span>
+                            </div>
                         </h1>
                         <p className="text-xl md:text-2xl text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
                             Discover, register, and participate in amazing events organized by Team Mavericks.
@@ -85,7 +87,7 @@ export default function LandingPage() {
                                 </Button>
                             </a>
                             <Link to="/login">
-                                <Button variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-primary">
+                                <Button variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-primary hover:bg-blue-300">
                                     Login
                                 </Button>
                             </Link>
@@ -130,7 +132,7 @@ export default function LandingPage() {
                         ) : (
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {events.map(evt => (
-                                    <div key={evt.id} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                                    <div key={evt.id} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
                                         {/* Poster Image */}
                                         {evt.poster_url ? (
                                             <div className="overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
@@ -147,7 +149,7 @@ export default function LandingPage() {
                                         )}
                                         <div className="p-6 flex-grow flex flex-col">
                                             {evt.poster_url && (
-                                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{evt.name}</h3>
+                                                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{evt.name}</h3>
                                             )}
                                             {/* Event meta info */}
                                             <div className="space-y-1.5 text-sm text-slate-500 dark:text-slate-400 mb-3">
@@ -219,13 +221,13 @@ export default function LandingPage() {
                     <p className="text-xl md:text-2xl text-blue-100 mb-10 max-w-2xl mx-auto">
                         {event.description}
                     </p>
-                    
+
                     {event.isCountdownEnabled && event.countdownTargetDate && (
                         <div className="mb-10 w-full flex justify-center">
                             <CountdownTimer targetDate={event.countdownTargetDate} />
                         </div>
                     )}
-                    
+
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link to={`/event/${slug}/register`}>
                             <Button variant="secondary" className="text-lg px-8 py-3 shadow-lg shadow-black/20">Register Now</Button>
@@ -281,7 +283,7 @@ export default function LandingPage() {
                             </div>
                         )}
 
-                        <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+                        <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                             <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-4">Why Attend?</h3>
                             <ul className="space-y-3 text-slate-600 dark:text-slate-400 list-disc list-inside">
                                 <li>Learn with fun!</li>
