@@ -80,6 +80,18 @@ const sendOtp = async (req, res) => {
         const { email, name } = req.body;
         if (!email) return res.status(400).json({ message: 'Email is required' });
 
+        // 1. Email Format Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Invalid email format. Please check your email address or use a different one.' });
+        }
+
+        // 2. Check if user already exists
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({ message: 'This email is already registered. Please log in to your account instead.' });
+        }
+
         const userName = name || email.split('@')[0];
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expires_at = new Date(Date.now() + 10 * 60000);
