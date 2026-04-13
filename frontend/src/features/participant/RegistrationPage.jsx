@@ -164,7 +164,7 @@ export default function RegistrationPage() {
             // Send OTP request with 15s timeout
             const otpRes = await axios.post(`${API}/api/email/send-otp`, 
                 { email: formData.email, name: formData.name },
-                { timeout: 15000 } // Fail after 15 seconds
+                { timeout: 35000 } // Fail after 35 seconds to allow for Render cold starts
             );
             
             console.log('>>> FRONTEND: OTP Response received:', otpRes.data);
