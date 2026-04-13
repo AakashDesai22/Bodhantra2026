@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Centralized API base URL — Environment dynamic loader
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+export const API_URL = import.meta.env.VITE_API_URL || 'https://bodhantra2026-y4yj.onrender.com';
 const api = axios.create({
     baseURL: API_URL,
 });
