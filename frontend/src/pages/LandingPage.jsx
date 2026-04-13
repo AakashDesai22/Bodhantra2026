@@ -252,7 +252,7 @@ export default function LandingPage() {
 
                             {event.payment_details && (
                                 <div className="mt-6 p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm">
-                                    <h3 className="font-semibold text-slate-800 dark:text-white mb-2">Payment Info</h3>
+                                    <h3 className="font-semibold text-slate-800 dark:text-white mb-2">College ID Card</h3>
                                     <p className="whitespace-pre-wrap text-base">{event.payment_details}</p>
                                 </div>
                             )}
@@ -284,10 +284,11 @@ export default function LandingPage() {
                         <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                             <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-4">Why Attend?</h3>
                             <ul className="space-y-3 text-slate-600 dark:text-slate-400 list-disc list-inside">
-                                <li>Learn from industry experts</li>
-                                <li>Network with peers and professionals</li>
-                                <li>Enhance your technical skills</li>
+                                <li>Learn with fun!</li>
+                                <li>Network connections with peers</li>
+                                <li>Enhance technical and non-technical skills</li>
                                 <li>Get participation certificates</li>
+                                <li>Win exciting prizes</li>
                             </ul>
                         </div>
 

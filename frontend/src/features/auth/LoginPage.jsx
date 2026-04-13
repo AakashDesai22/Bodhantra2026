@@ -28,7 +28,9 @@ export default function LoginPage() {
             if (from) {
                 navigate(from, { replace: true });
             } else {
-                navigate('/', { replace: true });
+                // Smart redirect: Admin to Admin Panel, others to Participant Dashboard
+                const destination = userData.role === 'admin' || userData.role === 'member' ? '/admin' : '/dashboard';
+                navigate(destination, { replace: true });
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please try again.');

@@ -262,16 +262,43 @@ function EventModal({ event, onClose, onSaved }) {
         whatsapp_link: event?.whatsapp_link || '',
         isCountdownEnabled: event?.isCountdownEnabled || false,
         countdownTargetDate: event?.countdownTargetDate ? new Date(event.countdownTargetDate).toISOString().slice(0, 16) : '',
+        photo_url: event?.photo_url || null,
+        poster_url: event?.poster_url || null,
+        qr_code_url: event?.qr_code_url || null,
     });
     const [customFields, setCustomFields] = useState(event?.custom_fields || []);
     const [attendanceSessions, setAttendanceSessions] = useState(event?.attendance_sessions || []);
     const [offlineContacts, setOfflineContacts] = useState(event?.offline_payment_contacts || []);
-    const [photo, setPhoto] = useState(null);
-    const [poster, setPoster] = useState(null);
-    const [qrCode, setQrCode] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [step, setStep] = useState(1);
+    const [uploadingField, setUploadingField] = useState(null);
+
+    const handleLocalFileChange = async (e, field) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploadingField(field);
+        const uploadData = new FormData();
+        uploadData.append('image', file);
+
+        try {
+            console.log(`>>> Starting instant upload for ${field}...`);
+            const res = await api.post('/api/upload', uploadData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
+            const uploadedUrl = res.data.url;
+            console.log(`>>> ✅ ${field} uploaded:`, uploadedUrl);
+            
+            setForm(prev => ({ ...prev, [field]: uploadedUrl }));
+        } catch (err) {
+            console.error(`>>> ❌ ${field} upload failed:`, err);
+            setError(`Failed to upload ${field}. Please try again.`);
+        } finally {
+            setUploadingField(null);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -284,24 +311,18 @@ function EventModal({ event, onClose, onSaved }) {
         setError('');
 
         try {
-            const data = new FormData();
-            Object.keys(form).forEach(key => data.append(key, form[key]));
-            data.append('custom_fields', JSON.stringify(customFields));
-            data.append('attendance_sessions', JSON.stringify(attendanceSessions));
-            data.append('offline_payment_contacts', JSON.stringify(offlineContacts));
-
-            if (photo) data.append('photo', photo);
-            if (poster) data.append('poster', poster);
-            if (qrCode) data.append('qr_code', qrCode);
+            // Simplified JSON submission since images are already on Cloudinary
+            const submissionData = {
+                ...form,
+                custom_fields: customFields,
+                attendance_sessions: attendanceSessions,
+                offline_payment_contacts: offlineContacts
+            };
 
             if (isEdit) {
-                await api.patch(`/api/events/admin/${event.id}`, data, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await api.patch(`/api/events/admin/${event.id}`, submissionData);
             } else {
-                await api.post('/api/events/admin/create', data, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await api.post('/api/events/admin/create', submissionData);
             }
 
             onSaved();
@@ -400,12 +421,18 @@ function EventModal({ event, onClose, onSaved }) {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Event Banner UI Image</label>
-                                    <input type="file" onChange={(e) => setPhoto(e.target.files[0])} accept="image/*" className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                        Event Banner UI Image {uploadingField === 'photo_url' && <span className="text-primary animate-pulse ml-2">(Uploading...)</span>}
+                                    </label>
+                                    <input type="file" onChange={(e) => handleLocalFileChange(e, 'photo_url')} accept="image/*" className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                                    {form.photo_url && <p className="text-[10px] text-green-600 mt-1 truncate">✅ Ready: {form.photo_url}</p>}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Event Poster (Optional)</label>
-                                    <input type="file" onChange={(e) => setPoster(e.target.files[0])} accept="image/*" className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                                        Event Poster (Optional) {uploadingField === 'poster_url' && <span className="text-primary animate-pulse ml-2">(Uploading...)</span>}
+                                    </label>
+                                    <input type="file" onChange={(e) => handleLocalFileChange(e, 'poster_url')} accept="image/*" className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                                    {form.poster_url && <p className="text-[10px] text-green-600 mt-1 truncate">✅ Ready: {form.poster_url}</p>}
                                 </div>
                             </div>
                             <div className="flex justify-end pt-2">
@@ -446,8 +473,11 @@ function EventModal({ event, onClose, onSaved }) {
                                         placeholder="e.g. valid-upi@id or Account details" 
                                     />
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Upload UPI QR Code (Optional)</label>
-                                        <input type="file" onChange={(e) => setQrCode(e.target.files[0])} accept="image/*" className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary file:text-white hover:file:bg-primary/90 cursor-pointer transition-colors" />
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                                            Upload UPI QR Code (Optional) {uploadingField === 'qr_code_url' && <span className="text-primary animate-pulse ml-2">(Uploading...)</span>}
+                                        </label>
+                                        <input type="file" onChange={(e) => handleLocalFileChange(e, 'qr_code_url')} accept="image/*" className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary file:text-white hover:file:bg-primary/90 cursor-pointer transition-colors" />
+                                        {form.qr_code_url && <p className="text-[10px] text-green-600 mt-1 truncate">✅ Ready: {form.qr_code_url}</p>}
                                     </div>
                                 </div>
                             )}

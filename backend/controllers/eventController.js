@@ -83,10 +83,10 @@ const createEvent = async (req, res) => {
 
         const slug = generateSlug(name);
 
-        // Handle file uploads
-        let photo_url = null;
-        let poster_url = null;
-        let qr_code_url = null;
+        // Handle file uploads (Prioritize direct files, fallback to body URLs for instant upload)
+        let photo_url = req.body.photo_url || null;
+        let poster_url = req.body.poster_url || null;
+        let qr_code_url = req.body.qr_code_url || null;
 
         if (req.files) {
             if (req.files.photo && req.files.photo[0]) {
@@ -173,7 +173,7 @@ const updateEvent = async (req, res) => {
 
         const { name, description, date, time, venue, payment_details, offline_payment, custom_fields, attendance_sessions, status, participant_limit, event_duration, registration_open, whatsapp_link, payment_amount, require_online_payment, require_offline_payment, offline_payment_contacts, isCountdownEnabled, countdownTargetDate } = req.body;
 
-        // Handle file uploads - only update if new file provided
+        // Handle file uploads - prioritize files, fallback to body URLs
         if (req.files) {
             if (req.files.photo && req.files.photo[0]) {
                 event.photo_url = req.files.photo[0].path;
@@ -184,6 +184,10 @@ const updateEvent = async (req, res) => {
             if (req.files.qr_code && req.files.qr_code[0]) {
                 event.qr_code_url = req.files.qr_code[0].path;
             }
+        } else {
+            if (req.body.photo_url) event.photo_url = req.body.photo_url;
+            if (req.body.poster_url) event.poster_url = req.body.poster_url;
+            if (req.body.qr_code_url) event.qr_code_url = req.body.qr_code_url;
         }
 
         if (name !== undefined) {
