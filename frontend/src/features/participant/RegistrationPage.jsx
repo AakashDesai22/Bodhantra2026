@@ -65,10 +65,18 @@ export default function RegistrationPage() {
     }, [slug]);
 
     const handleChange = (e) => {
-        if (e.target.name === 'college') {
-            setIsOtherCollege(e.target.value === 'Other');
+        const { name, value } = e.target;
+        if (name === 'college') {
+            setIsOtherCollege(value === 'Other');
         }
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        
+        if (name === 'phone') {
+            const numericValue = value.replace(/\D/g, '').slice(0, 10);
+            setFormData(prev => ({ ...prev, [name]: numericValue }));
+            return;
+        }
+        
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleCustomChange = (name, value) => {
@@ -110,6 +118,20 @@ export default function RegistrationPage() {
         e.preventDefault();
         setLoading(true);
         setError('');
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Please enter a valid email address.');
+            setLoading(false);
+            return;
+        }
+
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(formData.phone)) {
+            setError('Please enter a valid 10-digit mobile number.');
+            setLoading(false);
+            return;
+        }
 
         let finalCollege = formData.college;
         if (isOtherCollege) {
@@ -468,7 +490,7 @@ export default function RegistrationPage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Input label="Full Name *" name="name" required value={formData.name} onChange={handleChange} />
                                     <Input label="Email Address *" type="email" name="email" required value={formData.email} onChange={handleChange} />
-                                    <Input label="Phone Number *" name="phone" required value={formData.phone} onChange={handleChange} />
+                                    <Input label="Phone Number *" name="phone" required value={formData.phone} onChange={handleChange} maxLength={10} placeholder="e.g. 9876543210" />
                                     <Input label="PRN *" name="prn" required value={formData.prn} onChange={handleChange} placeholder="e.g. 21X00000" />
                                 </div>
                                 <p className="text-xs text-slate-400 mt-2 mb-6">

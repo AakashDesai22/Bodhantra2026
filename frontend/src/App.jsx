@@ -1,12 +1,14 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/components/ui/Toast';
+import ScrollToTop from '@/components/ScrollToTop';
 import AppRoutes from '@/routes/AppRoutes';
 import './App.css';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <ToastProvider>
           <AppRoutes />

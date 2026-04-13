@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { api, API_URL } from '@/api';
 import { Button } from '@/components/ui/Button';
 import CountdownTimer from '@/components/ui/CountdownTimer';
+import { BellRing, Gamepad2, Users } from 'lucide-react';
 
 const API = API_URL;
 
@@ -14,6 +15,8 @@ export default function LandingPage() {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        setLoading(true);
+        setError('');
         if (slug) {
             const fetchEvent = async () => {
                 try {
@@ -68,7 +71,7 @@ export default function LandingPage() {
                             </div>
                         </h1>
                         <p className="text-xl md:text-2xl text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
-                            Discover, register, and participate in amazing events organized by Team Mavericks.
+                            Discover, register and participate in amazing events organized by Team Mavericks.
                         </p>
 
                         {highlightedEvent && (
@@ -101,14 +104,16 @@ export default function LandingPage() {
                         <h2 className="text-3xl font-bold text-slate-800 dark:text-white text-center mb-12">Why Team Mavericks?</h2>
                         <div className="grid md:grid-cols-3 gap-8">
                             {[
-                                { icon: '🎯', title: 'Expert-Led Events', desc: 'Learn from industry professionals and thought leaders in hands-on workshops and seminars.' },
-                                { icon: '🤝', title: 'Networking Hub', desc: 'Connect with like-minded peers, mentors, and professionals from across colleges.' },
-                                { icon: '🏆', title: 'Grow Your Skills', desc: 'Participate in competitions, hackathons, and technical events to enhance your portfolio.' },
+                                { icon: <BellRing className="w-8 h-8 text-blue-600" />, title: 'Stay Updated, Stay Ahead!', desc: 'Our powerful tagline that emphasizes the importance of staying informed and ahead of the competition.' },
+                                { icon: <Gamepad2 className="w-8 h-8 text-indigo-600" />, title: 'Learning with Fun', desc: 'Learning with fun is a dynamic and engaging approach that fosters a positive and enjoyable learning experience.' },
+                                { icon: <Users className="w-8 h-8 text-purple-600" />, title: 'For the Students, By the Students!', desc: 'This is a student-run organisation. It was founded by the students where all the activities are organised and conducted by the students.' },
                             ].map((f, i) => (
-                                <div key={i} className="text-center p-8 rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-lg hover:border-slate-200 dark:hover:border-slate-600 transition-all duration-300">
-                                    <div className="text-4xl mb-4">{f.icon}</div>
-                                    <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3">{f.title}</h3>
-                                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{f.desc}</p>
+                                <div key={i} className="text-center p-8 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group">
+                                    <div className="w-16 h-16 mx-auto mb-6 bg-slate-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-sm border border-slate-100 dark:border-slate-600">
+                                        {f.icon}
+                                    </div>
+                                    <h3 className="text-xl font-extrabold text-slate-800 dark:text-white mb-4 tracking-tight leading-snug">{f.title}</h3>
+                                    <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm font-medium">{f.desc}</p>
                                 </div>
                             ))}
                         </div>
