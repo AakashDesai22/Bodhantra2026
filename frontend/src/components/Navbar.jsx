@@ -142,14 +142,7 @@ export default function Navbar() {
                             {/* Divider */}
                             <div className="w-px h-6 bg-white/20 mx-2" />
 
-                            {/* Theme Toggle */}
-                            <button
-                                onClick={toggleTheme}
-                                className="flex items-center justify-center w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all duration-200"
-                                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                            >
-                                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-                            </button>
+
 
                             {isAuthenticated ? (
                                 <div className="flex items-center gap-2 ml-1">
@@ -197,13 +190,6 @@ export default function Navbar() {
 
                         {/* ── Mobile Hamburger ── */}
                         <div className="flex items-center gap-2 md:hidden">
-                            <button
-                                onClick={toggleTheme}
-                                className="flex items-center justify-center w-10 h-10 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors duration-200"
-                                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                            >
-                                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-                            </button>
                             <button
                                 onClick={() => setMobileOpen(!mobileOpen)}
                                 className="flex items-center justify-center w-10 h-10 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors duration-200"
