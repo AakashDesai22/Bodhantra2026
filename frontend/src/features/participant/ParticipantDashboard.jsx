@@ -280,7 +280,7 @@ export default function ParticipantDashboard() {
 
                     <SupportCard />
 
-                    <Card>
+                    {/* <Card>
                         <CardHeader title="Keyword Chatbot" subtitle="Instant static answers" />
                         <CardContent>
                             <div className="h-64 overflow-y-auto bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg p-4 mb-4 space-y-3 flex flex-col">
@@ -299,7 +299,7 @@ export default function ParticipantDashboard() {
                                 <Button type="submit">Ask</Button>
                             </form>
                         </CardContent>
-                    </Card>
+                    </Card> */}
                 </div>
             </div>
 
