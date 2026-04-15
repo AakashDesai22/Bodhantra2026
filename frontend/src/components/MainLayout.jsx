@@ -20,8 +20,8 @@ const Footer = () => (
 
                 {/* Contact Quick Links */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm font-medium">
-                    <a href="tel:9766246585" className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors">
-                        <Phone size={16} className="text-primary" /> 9766246585
+                    <a href="tel:9767994567" className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors">
+                        <Phone size={16} className="text-primary" /> 9767994567
                     </a>
                     <a href="mailto:mavericksbodhantra@gmail.com" className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors">
                         <Mail size={16} className="text-primary" /> mavericksbodhantra@gmail.com
@@ -36,12 +36,12 @@ const Footer = () => (
                     <a href="https://www.linkedin.com/company/teammavericks/" target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-full bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all duration-300">
                         <Linkedin size={20} />
                     </a>
-                    <a href="#" className="p-2.5 rounded-full bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-blue-400 transition-all duration-300">
+                    {/* <a href="#" className="p-2.5 rounded-full bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-blue-400 transition-all duration-300">
                         <Twitter size={20} />
                     </a>
                     <a href="#" className="p-2.5 rounded-full bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-blue-800 transition-all duration-300">
                         <Facebook size={20} />
-                    </a>
+                    </a> */}
                 </div>
 
                 {/* Copyright */}
