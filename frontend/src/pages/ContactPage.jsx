@@ -43,7 +43,7 @@ export default function ContactPage() {
                             <ContactInfo 
                                 icon={Phone} 
                                 title="Phone Number" 
-                                content="+91 9766246585"
+                                content="+91 9767994567"
                                 subContent="Mon-Sat, 10am to 6pm"
                             />
                             <ContactInfo 
