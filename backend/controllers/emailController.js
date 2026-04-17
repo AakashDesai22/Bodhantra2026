@@ -65,7 +65,7 @@ const callHostingerMailer = async (data) => {
         params.append('subject', data.subject || '');
         params.append('whatsapp_link', data.whatsapp_link || 'https://chat.whatsapp.com/GH1GAB47UAW27EPcqVGbBb');
         
-        await axios.post(phpMailerUrl, params);
+        await axios.post(phpMailerUrl, params, { timeout: 5000 });
         console.log('>>> BACKEND: Hostinger Email Sender fallback used.');
         return true;
     } catch (error) {
@@ -106,7 +106,7 @@ const sendOtp = async (req, res) => {
         console.log(`\n=========================================\n[LOCAL LOG] OTP for ${email}: ${otp}\n=========================================\n`);
         
         console.log(`>>> BACKEND: Attempting OTP via Hostinger PHP Mailer to ${email}`);
-        const success = await callHostingerMailer({
+        let success = await callHostingerMailer({
             to_email: email, 
             user_name: userName, 
             otp: otp, 
@@ -114,8 +114,14 @@ const sendOtp = async (req, res) => {
         });
 
         if (!success) {
-            console.error('>>> BACKEND ERROR: Hostinger Mailer failed for OTP');
-            return res.status(500).json({ message: 'Failed to send OTP' });
+            console.warn('>>> BACKEND WARN: Hostinger Mailer failed for OTP, trying Nodemailer fallback...');
+            const html = templates.registrationOtp(userName, otp);
+            success = await sendMailDirect(email, 'Registration OTP - Team Mavericks', html);
+        }
+
+        if (!success) {
+            console.error('>>> BACKEND ERROR: All OTP mailing methods failed');
+            return res.status(500).json({ message: 'Failed to send OTP. Please try again later or contact support.' });
         }
 
         res.status(200).json({ message: 'OTP sent successfully' });
@@ -135,13 +141,18 @@ const sendRegistrationEmail = async (email, name, eventName, date, venue, whatsa
         }
 
         console.log(`>>> BACKEND: Attempting Registration Confirmation via Hostinger to ${email}`);
-        await callHostingerMailer({ 
+        let success = await callHostingerMailer({ 
             to_email: email, 
             user_name: name, 
             otp: 'CONFIRMED', 
             subject: title,
             whatsapp_link: whatsappLink 
         });
+
+        if (!success) {
+            console.warn('>>> BACKEND WARN: Hostinger Mailer failed for registration email, trying Nodemailer fallback...');
+            await sendMailDirect(email, title, html);
+        }
     } catch (error) {
         console.error('Error sending registration email:', error.message);
     }
@@ -154,19 +165,19 @@ const sendTemplateEmail = async (email, subject, templateName, data) => {
             htmlContent = templates.generalAnnouncement(data.user_name || email.split('@')[0], data.eventName || 'Event', data.message, '', subject, '');
         }
 
-        let success = false;
-        if (htmlContent) {
-           success = await sendMailDirect(email, subject, htmlContent);
-        }
-
         console.log(`>>> BACKEND: Attempting Broadcast via Hostinger to ${email}`);
-        await callHostingerMailer({ 
+        const hostingerSuccess = await callHostingerMailer({ 
             to_email: email, 
             subject: subject, 
             user_name: data.user_name || email.split('@')[0], 
             otp: data.message || '',
             whatsapp_link: data.whatsappLink || ''
         });
+
+        if (!hostingerSuccess && htmlContent) {
+            console.warn('>>> BACKEND WARN: Hostinger Mailer failed for template email, trying Nodemailer fallback...');
+            await sendMailDirect(email, subject, htmlContent);
+        }
     } catch (error) {
         console.error('Error sending Template Email:', error.message);
     }

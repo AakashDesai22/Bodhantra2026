@@ -374,7 +374,22 @@ const templates = {
 
         <p style="font-size: 14px; color: #6b7280;">For your security, please update your password immediately after logging in for the first time.</p>
         `
+    ),
+
+    // 8. OTP Template for Registration
+    registrationOtp: (name, otp) => baseTemplate(
+        'Registration OTP - Team Mavericks',
+        `
+        <p>Hi <span class="highlight">${name}</span>,</p>
+        <p>Your One-Time Password (OTP) for registration is:</p>
+        <div style="background: #f3f4f6; padding: 24px; text-align: center; border-radius: 12px; margin: 24px 0; border: 1px solid #e5e7eb;">
+            <h1 style="font-size: 36px; letter-spacing: 8px; color: #111827; margin: 0; font-family: monospace;">${otp}</h1>
+        </div>
+        <p>This OTP is valid for 10 minutes. For your security, please do not share this code with anyone.</p>
+        <p>If you did not request this OTP, please ignore this email or contact support if you have concerns.</p>
+        `
     )
 };
+
 
 module.exports = templates;
