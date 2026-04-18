@@ -218,44 +218,52 @@ export default function JackpotDisplay() {
                         key="revealed"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="absolute inset-0 z-20 flex flex-col items-center justify-center w-full h-full p-8"
+                        className="absolute inset-0 z-20 flex flex-col items-center justify-between w-full h-full py-10 px-8"
                     >
-                        {/* Make sure the persistent title still shows up top if desired, or we just render the REVEALED state */}
-                        <div className="absolute top-0 inset-x-0 pt-16 pb-8 text-center flex-shrink-0 flex flex-col items-center justify-center pointer-events-none">
-                            <motion.h1 
-                                initial={{ y: -50, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                className="text-5xl md:text-6xl font-black text-yellow-400 uppercase tracking-wider"
-                                style={{ textShadow: '0 0 30px rgba(250,204,21,0.8), 0 0 60px rgba(250,204,21,0.4)' }}
-                            >
-                                {config?.title || "CANDIDATE OF SESSION DAY 1"}
-                            </motion.h1>
-                        </div>
+                        {/* ── Title at the top ── */}
+                        <motion.h1 
+                            initial={{ y: -50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ duration: 0.6 }}
+                            className="text-5xl md:text-6xl font-black text-yellow-400 uppercase tracking-wider text-center flex-shrink-0"
+                            style={{ textShadow: '0 0 30px rgba(250,204,21,0.8), 0 0 60px rgba(250,204,21,0.4)' }}
+                        >
+                            {config?.title || "CANDIDATE OF SESSION DAY 1"}
+                        </motion.h1>
 
+                        {/* ── Winner photo in the middle ── */}
                         {config?.winnerPhoto && (
                             <motion.div
-                                initial={{ y: -800, rotate: -25, scale: 0.3 }}
-                                animate={{ y: 0, rotate: 0, scale: 1 }}
-                                transition={{ type: 'spring', stiffness: 200, damping: 12 }}
-                                className="w-80 h-80 md:w-[35rem] md:h-[35rem] rounded-full overflow-hidden border-[16px] border-yellow-400 shadow-[0_0_150px_rgba(250,204,21,0.8),inset_0_0_50px_rgba(0,0,0,0.8)] mb-8 relative bg-slate-900 mt-20"
+                                initial={{ scale: 0.3, rotate: -25, opacity: 0 }}
+                                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                                transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
+                                className="w-64 h-64 md:w-[22rem] md:h-[22rem] rounded-full overflow-hidden border-[12px] border-yellow-400 shadow-[0_0_100px_rgba(250,204,21,0.8),inset_0_0_40px_rgba(0,0,0,0.8)] bg-slate-900 flex-shrink-0"
                             >
-                                <img src={`${config.winnerPhoto?.startsWith('http') ? config.winnerPhoto : `${API_URL}${config.winnerPhoto}`}`} alt="Winner" className="w-full h-full object-cover relative z-0" />
+                                <img src={`${config.winnerPhoto?.startsWith('http') ? config.winnerPhoto : `${API_URL}${config.winnerPhoto}`}`} alt="Winner" className="w-full h-full object-cover" />
                             </motion.div>
                         )}
                         
+                        {/* ── Winner name slot box at the bottom ── */}
                         <motion.div 
-                            initial={{ y: 100, opacity: 0, filter: 'blur(10px)' }}
+                            initial={{ y: 80, opacity: 0, filter: 'blur(10px)' }}
                             animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-                            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-                            className="text-center w-full max-w-6xl mt-4"
+                            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+                            className="text-center w-full max-w-5xl flex-shrink-0"
                         >
-                            <h2 className="text-[5rem] md:text-[8rem] font-black text-yellow-100 uppercase tracking-tighter drop-shadow-[0_0_60px_rgba(250,204,21,1)] leading-[0.95] text-center w-full px-4 flex flex-col items-center justify-center">
-                                {config?.winnerName ? (
-                                    config.winnerName.split(' ').map((word, i) => (
-                                        <span key={i} className="block">{word}</span>
-                                    ))
-                                ) : "UNKNOWN"}
-                            </h2>
+                            {/* Slot-machine style name box */}
+                            <div
+                                style={{
+                                    background: 'linear-gradient(180deg, #1f2937 0%, #111827 100%)',
+                                    border: '4px solid #374151',
+                                    borderRadius: '16px',
+                                    padding: '20px 40px',
+                                    boxShadow: 'inset 0 10px 30px rgba(0,0,0,0.7), 0 0 40px rgba(250,204,21,0.15)',
+                                }}
+                            >
+                                <h2 className="text-[3.5rem] md:text-[5.5rem] font-black text-yellow-100 uppercase tracking-widest drop-shadow-[0_0_40px_rgba(250,204,21,1)] leading-tight text-center">
+                                    {config?.winnerName || "UNKNOWN"}
+                                </h2>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
